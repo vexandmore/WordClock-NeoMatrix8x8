@@ -85,6 +85,8 @@ uint64_t mask;
 #define FIF      mask |= 0xC10000000000
 #define THIR     mask |= 0x8080008040000
 #define DAY_INDICATOR mask |= 0x100000000000000
+// These masks are extra for year
+#define YEAR_INDICATOR mask |= 0x200000000000000
 
 
 // define pins
@@ -110,6 +112,7 @@ uint64_t mask;
 #define SHOW_MOON_DURATION 3000   // how long to show the moon (s)
 #define SHOW_DAY_DURATION  3000   // how long to show the day of month (s)
 #define SHOW_MONTH_DURATION 3000   // how long to show the month (s)
+#define SHOW_YEAR_DURATION 3000   // how long to show the year (s)
 
 RTC_DS1307 RTC; // Establish clock object
 DST_RTC dst_rtc; // DST object
@@ -149,6 +152,7 @@ enum DisplayState {
   showTime,
   showDay,
   showMonth,
+  showYear,
   showMoon
 };
 unsigned long timeStateStarted;
@@ -214,7 +218,6 @@ void loop() {
   theTime = theTime.unixtime() + 150;
 
   adjustBrightness();
-
   switch (displayState) {
     case showTime:
       displayTime();
@@ -233,6 +236,13 @@ void loop() {
     case showMonth:
       month();
       if (millis() - timeStateStarted > SHOW_MONTH_DURATION) {
+        timeStateStarted = millis();
+        displayState = showYear;
+      }
+      break;
+    case showYear:
+      year();
+      if (millis() - timeStateStarted > SHOW_YEAR_DURATION) {
         timeStateStarted = millis();
         displayState = showMoon;
       }
