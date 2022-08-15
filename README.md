@@ -7,7 +7,8 @@ https://andydoro.com/wordclockdesktop/
 [Adafruit Learn Guide](https://learn.adafruit.com/neomatrix-8x8-word-clock/)
 
 A word clock which uses NeoPixel RGB LEDs for a color shifting effect.
-Forked by me (vexandmore) to show the moon phase every few minutes.
+
+Forked by me (vexandmore) to show the moon phase every few minutes. I also changed the default brightness.
 
 
 Hardware

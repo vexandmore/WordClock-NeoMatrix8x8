@@ -99,6 +99,9 @@ uint64_t mask;
 // define delays
 #define FLASHDELAY 250  // delay for startup "flashWords" sequence
 #define SHIFTDELAY 100   // controls color shifting speed
+// These delays are for switching between showing the time and moon phase
+#define SHOW_TIME_DURATION 120000 // how long to show the time (ms)
+#define SHOW_MOON_DURATION 3000   // how long to show the moon (ms)
 
 
 RTC_DS1307 RTC; // Establish clock object
@@ -134,14 +137,14 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, NEOPIN,
                             NEO_MATRIX_ROWS + NEO_MATRIX_PROGRESSIVE,
                             NEO_GRB         + NEO_KHZ800);
 
-#define SHOW_TIME_DURATION 120000
-#define SHOW_MOON_DURATION 3000
+// These variables are for switching between the time and moon phase
 enum DisplayState {
   showTime,
   showMoon
 };
 unsigned long timeStateStarted;
 DisplayState displayState = showTime;
+
 
 void setup() {
   // put your setup code here, to run once:
@@ -202,7 +205,7 @@ void loop() {
   theTime = theTime.unixtime() + 150;
 
   adjustBrightness();
-
+  
   switch (displayState) {
     case showTime:
       displayTime();
