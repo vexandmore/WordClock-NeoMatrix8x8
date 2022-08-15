@@ -80,6 +80,10 @@ uint64_t mask;
 #define ELEVEN   mask |= 0x3F00
 #define TWELVE   mask |= 0xF600
 #define ANDYDORO mask |= 0x8901008700000000
+// These masks are extra for the day-of-month
+#define TEEN     mask |= 0x1030202
+#define FIF      mask |= 0xC10000000000
+#define THIR     mask |= 0x8080008040000
 
 // define pins
 #define NEOPIN 8  // connect to DIN on NeoMatrix 8x8
@@ -100,9 +104,9 @@ uint64_t mask;
 #define FLASHDELAY 250  // delay for startup "flashWords" sequence
 #define SHIFTDELAY 100   // controls color shifting speed
 // These delays are for switching between showing the time and moon phase
-#define SHOW_TIME_DURATION 120000 // how long to show the time (ms)
-#define SHOW_MOON_DURATION 3000   // how long to show the moon (ms)
-
+#define SHOW_TIME_DURATION 120  // how long to show the time (s)
+#define SHOW_MOON_DURATION 3   // how long to show the moon (s)
+#define SHOW_DAY_DURATION  3   // how long to show the day of month (s)
 
 RTC_DS1307 RTC; // Establish clock object
 DST_RTC dst_rtc; // DST object
@@ -140,6 +144,7 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, NEOPIN,
 // These variables are for switching between the time and moon phase
 enum DisplayState {
   showTime,
+  showDay,
   showMoon
 };
 unsigned long timeStateStarted;
@@ -209,14 +214,21 @@ void loop() {
   switch (displayState) {
     case showTime:
       displayTime();
-      if (millis() - timeStateStarted > SHOW_TIME_DURATION) {
+      if (millis() - timeStateStarted > SHOW_TIME_DURATION * 1000) {
+        timeStateStarted = millis();
+        displayState = showDay;
+      }
+      break;
+    case showDay:
+      dayOfMonth();
+      if (millis() - timeStateStarted > SHOW_DAY_DURATION * 1000) {
         timeStateStarted = millis();
         displayState = showMoon;
       }
       break;
     case showMoon:
       mode_moon();
-      if (millis() - timeStateStarted > SHOW_MOON_DURATION) {
+      if (millis() - timeStateStarted > SHOW_MOON_DURATION * 1000) {
         timeStateStarted = millis();
         displayState = showTime;
       }
