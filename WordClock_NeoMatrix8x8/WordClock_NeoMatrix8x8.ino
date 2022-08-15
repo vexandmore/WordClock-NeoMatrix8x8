@@ -104,9 +104,9 @@ uint64_t mask;
 #define FLASHDELAY 250  // delay for startup "flashWords" sequence
 #define SHIFTDELAY 100   // controls color shifting speed
 // These delays are for switching between showing the time and moon phase
-#define SHOW_TIME_DURATION 120  // how long to show the time (s)
-#define SHOW_MOON_DURATION 3   // how long to show the moon (s)
-#define SHOW_DAY_DURATION  3   // how long to show the day of month (s)
+#define SHOW_TIME_DURATION 60000  // how long to show the time (s)
+#define SHOW_MOON_DURATION 3000   // how long to show the moon (s)
+#define SHOW_DAY_DURATION  3000   // how long to show the day of month (s)
 
 RTC_DS1307 RTC; // Establish clock object
 DST_RTC dst_rtc; // DST object
@@ -214,21 +214,21 @@ void loop() {
   switch (displayState) {
     case showTime:
       displayTime();
-      if (millis() - timeStateStarted > SHOW_TIME_DURATION * 1000) {
+      if (millis() - timeStateStarted > SHOW_TIME_DURATION) {
         timeStateStarted = millis();
         displayState = showDay;
       }
       break;
     case showDay:
       dayOfMonth();
-      if (millis() - timeStateStarted > SHOW_DAY_DURATION * 1000) {
+      if (millis() - timeStateStarted > SHOW_DAY_DURATION) {
         timeStateStarted = millis();
         displayState = showMoon;
       }
       break;
     case showMoon:
       mode_moon();
-      if (millis() - timeStateStarted > SHOW_MOON_DURATION * 1000) {
+      if (millis() - timeStateStarted > SHOW_MOON_DURATION) {
         timeStateStarted = millis();
         displayState = showTime;
       }
