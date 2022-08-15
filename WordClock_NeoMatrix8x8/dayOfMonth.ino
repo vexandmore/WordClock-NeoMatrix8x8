@@ -1,7 +1,7 @@
 
 void dayOfMonth() {
   // display the D in the upper-right corner, for day
-  mask |= 0x100000000000000;
+  DAY_INDICATOR;
   
   int day = theTime.day();
   if (day == 1) {

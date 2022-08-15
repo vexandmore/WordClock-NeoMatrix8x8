@@ -84,6 +84,8 @@ uint64_t mask;
 #define TEEN     mask |= 0x1030202
 #define FIF      mask |= 0xC10000000000
 #define THIR     mask |= 0x8080008040000
+#define DAY_INDICATOR mask |= 0x100000000000000
+
 
 // define pins
 #define NEOPIN 8  // connect to DIN on NeoMatrix 8x8
@@ -107,6 +109,7 @@ uint64_t mask;
 #define SHOW_TIME_DURATION 60000  // how long to show the time (s)
 #define SHOW_MOON_DURATION 3000   // how long to show the moon (s)
 #define SHOW_DAY_DURATION  3000   // how long to show the day of month (s)
+#define SHOW_MONTH_DURATION 3000   // how long to show the month (s)
 
 RTC_DS1307 RTC; // Establish clock object
 DST_RTC dst_rtc; // DST object
@@ -145,6 +148,7 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, NEOPIN,
 enum DisplayState {
   showTime,
   showDay,
+  showMonth,
   showMoon
 };
 unsigned long timeStateStarted;
@@ -210,7 +214,7 @@ void loop() {
   theTime = theTime.unixtime() + 150;
 
   adjustBrightness();
-  
+
   switch (displayState) {
     case showTime:
       displayTime();
@@ -222,6 +226,13 @@ void loop() {
     case showDay:
       dayOfMonth();
       if (millis() - timeStateStarted > SHOW_DAY_DURATION) {
+        timeStateStarted = millis();
+        displayState = showMonth;
+      }
+      break;
+    case showMonth:
+      month();
+      if (millis() - timeStateStarted > SHOW_MONTH_DURATION) {
         timeStateStarted = millis();
         displayState = showMoon;
       }
