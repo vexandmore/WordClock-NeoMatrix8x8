@@ -88,8 +88,8 @@ uint64_t mask;
 
 
 // brightness based on time of day- could try warmer colors at night?
-#define DAYBRIGHTNESS 40
-#define NIGHTBRIGHTNESS 20
+#define DAYBRIGHTNESS 20
+#define NIGHTBRIGHTNESS 10
 
 // cutoff times for day / night brightness. feel free to modify.
 #define MORNINGCUTOFF 7  // when does daybrightness begin?   7am
@@ -134,6 +134,14 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, NEOPIN,
                             NEO_MATRIX_ROWS + NEO_MATRIX_PROGRESSIVE,
                             NEO_GRB         + NEO_KHZ800);
 
+#define SHOW_TIME_DURATION 120000
+#define SHOW_MOON_DURATION 3000
+enum DisplayState {
+  showTime,
+  showMoon
+};
+unsigned long timeStateStarted;
+DisplayState displayState = showTime;
 
 void setup() {
   // put your setup code here, to run once:
@@ -181,7 +189,9 @@ void setup() {
   delay(500);
   flashWords(); // briefly flash each word in sequence
   delay(500);
+  timeStateStarted = millis();
 }
+
 
 void loop() {
   // put your main code here, to run repeatedly:
@@ -192,11 +202,21 @@ void loop() {
   theTime = theTime.unixtime() + 150;
 
   adjustBrightness();
-  displayTime();
 
-  //mode_moon(); // uncomment to show moon mode instead!
-
-
+  switch (displayState) {
+    case showTime:
+      displayTime();
+      if (millis() - timeStateStarted > SHOW_TIME_DURATION) {
+        timeStateStarted = millis();
+        displayState = showMoon;
+      }
+      break;
+    case showMoon:
+      mode_moon();
+      if (millis() - timeStateStarted > SHOW_MOON_DURATION) {
+        timeStateStarted = millis();
+        displayState = showTime;
+      }
+      break;
+  }
 }
-
-
