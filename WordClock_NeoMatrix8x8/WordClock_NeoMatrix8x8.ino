@@ -54,6 +54,7 @@
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
 #include "functions.h"
+#include "config.h"
 
 // define how to write each of the words
 
@@ -95,42 +96,16 @@ uint64_t mask;
 #define RTCGND A2 // use this as DS1307 breakout ground 
 #define RTCPWR A3 // use this as DS1307 breakout power
 
-
-// brightness based on time of day- could try warmer colors at night?
-#define DAYBRIGHTNESS 20
-#define NIGHTBRIGHTNESS 10
-
-// cutoff times for day / night brightness. feel free to modify.
-#define MORNINGCUTOFF 7  // when does daybrightness begin?   7am
-#define NIGHTCUTOFF   22 // when does nightbrightness begin? 10pm
-
-
-// define delays
-#define FLASHDELAY 250  // delay for startup "flashWords" sequence
-#define SHIFTDELAY 100   // controls color shifting speed
-// These delays are for switching between showing the time and moon phase
-#define SHOW_TIME_DURATION 60000  // how long to show the time (s)
-#define SHOW_MOON_DURATION 3000   // how long to show the moon (s)
-#define SHOW_DAY_DURATION  3000   // how long to show the day of month (s)
-#define SHOW_MONTH_DURATION 3000   // how long to show the month (s)
-#define SHOW_YEAR_DURATION 3000   // how long to show the year (s)
-
 RTC_DS1307 RTC; // Establish clock object
 DST_RTC dst_rtc; // DST object
 
-// Define US or EU rules for DST comment out as required. More countries could be added with different rules in DST_RTC.cpp
-const char rulesDST[] = "US"; // US DST rules
-// const char rulesDST[] = "EU";   // EU DST rules
+// Define US or EU rules for DST comment out as required. see config.h
+// More countries could be added with different rules in DST_RTC.cpp
+const char rulesDST[] = RULES_DST;
 
 DateTime theTime; // Holds current clock time
 
 int j;   // an integer for the color shifting effect
-
-// Do you live in a country or territory that observes Daylight Saving Time?
-// https://en.wikipedia.org/wiki/Daylight_saving_time_by_country
-// Use 1 if you observe DST, 0 if you don't. This is programmed for DST in the US / Canada. If your territory's DST operates differently,
-// you'll need to modify the code in the calcTheTime() function to make this work properly.
-//#define OBSERVE_DST 1
 
 
 // Parameter 1 = number of pixels in strip
