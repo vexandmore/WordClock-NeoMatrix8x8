@@ -8,7 +8,24 @@ https://andydoro.com/wordclockdesktop/
 
 A word clock which uses NeoPixel RGB LEDs for a color shifting effect.
 
-Forked by me (vexandmore) to show the moon phase every few minutes. I also changed the default brightness.
+Forked by me (vexandmore) to show the moon phase, day, and year every few minutes. I also changed the default brightness.
+
+How to read it
+--------------
+The time of day is read as usual. However, the day, month, and year are read a bit differently:
+- The day of month is read close to the time, with one exception: 30 and 31 are 'twenty ten one' and 'twenty ten two' respectively
+- The month of year is read by counting the number of bars that are filled in. Each bar is 1x4 LEDs in the matrix
+- The year is shown as the last two digits, ie 2022 is 'twenty two'. This only works until 2029; after that, it will show the year in binary across the bottom
+- The lunar phase is shown as a pictogram; I have not modified this from the original code
+
+How to configure
+----------------
+Go into the ```WordClock-NeoMatrix8x8``` folder and open ```config.h```. There are many
+options there, including changing the amount of time each mode stays on, the
+brightness, daylight savings time, etc.
+
+To change the order of the modes, head to ```WordClock_NeoMatrix8x8.ino``` and change 
+the order of the ```states[]``` array.
 
 
 Hardware
