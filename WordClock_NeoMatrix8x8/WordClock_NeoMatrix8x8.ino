@@ -53,6 +53,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_NeoMatrix.h>
 #include <Adafruit_NeoPixel.h>
+#include "functions.h"
 
 // define how to write each of the words
 
@@ -147,16 +148,19 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, NEOPIN,
                             NEO_MATRIX_ROWS + NEO_MATRIX_PROGRESSIVE,
                             NEO_GRB         + NEO_KHZ800);
 
+
 // These variables are for switching between the time and moon phase
-enum DisplayState {
-  showTime,
-  showDay,
-  showMonth,
-  showYear,
-  showMoon
+class State {
+  public:
+  State(void (*callback) (void), unsigned long timeOnThisState): callback(callback), timeOnThisState(timeOnThisState){}
+  void (*callback) (void);
+  unsigned long timeOnThisState;
 };
+
 unsigned long timeStateStarted;
-DisplayState displayState = showTime;
+int displayState = 0;
+State states[] = {State(&displayTime, SHOW_TIME_DURATION), State(&dayOfMonth, SHOW_DAY_DURATION),
+                        State(&month, SHOW_MONTH_DURATION), State(&year, SHOW_YEAR_DURATION), State(&mode_moon, SHOW_MOON_DURATION)};
 
 
 void setup() {
@@ -208,51 +212,36 @@ void setup() {
   timeStateStarted = millis();
 }
 
-
 void loop() {
-  // put your main code here, to run repeatedly:
+  updateTime();
+  adjustBrightness();
+  updateDisplay();
+  changeDisplayIfNeeded();
+}
 
+void updateTime() {
   // get the time
   theTime = dst_rtc.calculateTime(RTC.now()); // takes into account DST
   // add 2.5 minutes to get better estimates
   theTime = theTime.unixtime() + 150;
+}
 
-  adjustBrightness();
-  switch (displayState) {
-    case showTime:
-      displayTime();
-      if (millis() - timeStateStarted > SHOW_TIME_DURATION) {
-        timeStateStarted = millis();
-        displayState = showDay;
-      }
-      break;
-    case showDay:
-      dayOfMonth();
-      if (millis() - timeStateStarted > SHOW_DAY_DURATION) {
-        timeStateStarted = millis();
-        displayState = showMonth;
-      }
-      break;
-    case showMonth:
-      month();
-      if (millis() - timeStateStarted > SHOW_MONTH_DURATION) {
-        timeStateStarted = millis();
-        displayState = showYear;
-      }
-      break;
-    case showYear:
-      year();
-      if (millis() - timeStateStarted > SHOW_YEAR_DURATION) {
-        timeStateStarted = millis();
-        displayState = showMoon;
-      }
-      break;
-    case showMoon:
-      mode_moon();
-      if (millis() - timeStateStarted > SHOW_MOON_DURATION) {
-        timeStateStarted = millis();
-        displayState = showTime;
-      }
-      break;
+void updateDisplay() {
+  if (displayState < sizeof(states)) {
+    State currentState = states[displayState];
+    // run function for current state
+    currentState.callback(); 
+  }
+}
+
+void changeDisplayIfNeeded() {
+  if (displayState < sizeof(states)) {
+    State currentState = states[displayState];
+    // Advance to next state if needed
+    if (millis() - timeStateStarted > currentState.timeOnThisState) {
+      displayState = displayState + 1;
+      displayState = displayState % 5;
+      timeStateStarted = millis();
+    }
   }
 }
