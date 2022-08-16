@@ -134,8 +134,8 @@ class State {
 
 unsigned long timeStateStarted;
 int displayState = 0;
-State states[] = {State(&displayTime, SHOW_TIME_DURATION), State(&displayDay, SHOW_DAY_DURATION),
-                        State(&displayMonth, SHOW_MONTH_DURATION), State(&displayYear, SHOW_YEAR_DURATION), State(&mode_moon, SHOW_MOON_DURATION)};
+State states[] = {State(&displayTime, SHOW_TIME_DURATION), State(&mode_moon, SHOW_MOON_DURATION), State(&displayDay, SHOW_DAY_DURATION),
+                        State(&displayMonth, SHOW_MONTH_DURATION), State(&displayYear, SHOW_YEAR_DURATION)};
 
 
 void setup() {
