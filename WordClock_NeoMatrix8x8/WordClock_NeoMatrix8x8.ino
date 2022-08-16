@@ -215,7 +215,8 @@ void changeDisplayIfNeeded() {
     // Advance to next state if needed
     if (millis() - timeStateStarted > currentState.timeOnThisState) {
       displayState = displayState + 1;
-      displayState = displayState % 5;
+      // loop over
+      displayState = displayState % (sizeof(states)/sizeof(states[0]));
       timeStateStarted = millis();
     }
   }
