@@ -22,8 +22,8 @@
 #define FLASHDELAY 250  // delay for startup "flashWords" sequence
 #define SHIFTDELAY 100   // controls color shifting speed
 // These delays are for switching between showing the time,moon, etc phases
-#define SHOW_TIME_DURATION 60000  // how long to show the time (ms)
-#define SHOW_MOON_DURATION 3000   // how long to show the moon (ms)
-#define SHOW_DAY_DURATION  3000   // how long to show the day of month (ms)
+#define SHOW_TIME_DURATION  60000  // how long to show the time (ms)
+#define SHOW_MOON_DURATION  3000   // how long to show the moon (ms)
+#define SHOW_DAY_DURATION   3000   // how long to show the day of month (ms)
 #define SHOW_MONTH_DURATION 3000   // how long to show the month (ms)
-#define SHOW_YEAR_DURATION 3000   // how long to show the year (ms)
+#define SHOW_YEAR_DURATION  3000   // how long to show the year (ms)

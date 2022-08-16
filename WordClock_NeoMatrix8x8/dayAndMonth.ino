@@ -1,5 +1,15 @@
+void displayMonth(void) {
+  int month = theTime.month();
+  
+  uint64_t base = 0xF, shift = 60; 
+  for (int i = 0; i < month; i++) {
+    mask |= base << (shift - 4*i);
+  }
+  applyMask(); // apply phrase mask to colorshift function
+}
 
-void dayOfMonth() {
+
+void displayDay() {
   // display the D in the upper-right corner, for day
   DAY_INDICATOR;
   

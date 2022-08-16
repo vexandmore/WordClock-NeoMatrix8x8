@@ -1,9 +1,6 @@
-void year() {
+void displayYear() {
   int year = theTime.year();
-  if (year < 2021 || year > 2029) {
-    // can't handle this - use binary
-    mask |= year;
-  } else if (year == 2021) {
+  if (year == 2021) {
     TWENTY;
     ONE;
   } else if (year == 2022) {
@@ -30,6 +27,9 @@ void year() {
   } else if (year == 2029) {
     TWENTY;
     NINE;
+  } else {
+    // can't handle this - use binary
+    mask |= year;
   }
   applyMask();
 }
